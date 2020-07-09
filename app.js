@@ -87,15 +87,22 @@ app.post("/", function(req, res) {
   });
 
   if(listTitle === day){
-    addItem.save();
-    res.redirect("/");
+    addItem.save(function(err){
+      if(!err){
+        res.redirect("/");
+      }
+    });
+
   } else{
 
     List.findOne({name: listTitle}, function(err, foundList){
-      console.log(foundList);
+      //console.log(foundList);
       foundList.items.push(addItem);
-      foundList.save();
-      res.redirect("/"+listTitle);
+      foundList.save(function(err){
+        if(!err){
+          res.redirect("/"+listTitle);
+        }
+      });
     });
   }
 
@@ -141,9 +148,11 @@ app.get("/:customListName", function(req, res){
         items: defaultItems
       });
 
-      list.save();
-
-      res.redirect("/" + customListName);
+      list.save(function(err){
+        if(!err){
+          res.redirect("/" + customListName);
+        }
+      });
 
     } else {
       //console.log("already exists");
